@@ -21,31 +21,42 @@ class Profile extends Component {
 		this.state = {
 			profile: {},
 			repositories: [],
-			loading: true
+			loading: true,
+			error: '',
 		};
 	}
 
 	async componentDidMount() {
-		const profile = await fetch('https://api.github.com/users/w11ld33r');
-		const profileJSON = await profile.json();
 
-		if (profileJSON) {
-			const repositories = await fetch(profileJSON.repos_url);
-			const repositoriesJSON = await repositories.json();
+		try {
+			const profile = await fetch('https://api.github.com/users/octocat');
+			const profileJSON = await profile.json();
 
+			if (profileJSON) {
+				console.log(profile);
+				const repositories = await fetch(profileJSON.repos_url);
+				const repositoriesJSON = await repositories.json();
+
+				this.setState({
+					profile: profileJSON,
+					repositories: repositoriesJSON,
+					loading: false
+				});
+			}
+
+		} catch (error) {
 			this.setState({
-				profile: profileJSON,
-				repositories: repositoriesJSON,
-				loading: false
+				loading: false,
+				error: error.message
 			});
 		}
 	}
 
 	render() {
-		const {profile, loading, repositories} = this.state;
+		const {profile, loading, repositories, error} = this.state;
 
-		if (loading) {
-			return <div>Loading...</div>
+		if (loading || error) {
+			return <div>{loading? 'Loading...' : error}</div>
 		}
 
 		const items = [
