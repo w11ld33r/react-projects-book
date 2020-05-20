@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 
 function withDataFetching(WrappedComponent) {
 
-	return class extends Component {
+	class WithDataFetching extends Component {
 
 		constructor(props) {
 			super(props);
@@ -49,6 +49,9 @@ function withDataFetching(WrappedComponent) {
 			);
 		}
 	}
+
+	WithDataFetching.displayName = `WithDataFetching(${WrappedComponent.name})`;
+	return WithDataFetching;
 }
 
 
